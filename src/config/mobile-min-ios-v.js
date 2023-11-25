@@ -1,0 +1,1 @@
+const MINIMUM_MOBILE_APP_VERSION_IOS = "v1.0.0";
