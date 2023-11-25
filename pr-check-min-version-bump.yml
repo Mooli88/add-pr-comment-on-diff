@@ -1,0 +1,48 @@
+name: "PR: Check mobile minimum version changed"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  remind-author-to-perform-necessary-checks-for-min-version-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
+
+      - name: Check if mobile min version changed
+        id: check-mobile-min-version-changed
+        run: |
+          if git diff origin/main origin/${GITHUB_HEAD_REF} -- "src/" | grep -qE "(MINIMUM_MOBILE_APP_VERSION_ANDROID = |MINIMUM_MOBILE_APP_VERSION_IOS =)"; then
+            echo "::set-output name=mobile_version_changed::true"
+          fi
+
+      # - name: Mark comment as resolved if prefix is set
+      #   uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
+      #   if: ${{ contains(github.event.pull_request.title, '[No release]') || contains(github.event.pull_request.title, '[Update only]') || contains(github.event.pull_request.title, '[Significant change]') || contains(github.event.pull_request.title, '[Native change]') }}
+      #   with:
+      #     header: release-strategy
+      #     hide: true
+      #     hide_classify: RESOLVED
+
+      - name: Post comment on PR if prefix isn't set
+        uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
+        with:
+          header: min-version-changed
+          only_create: true
+          message: |
+            ### 📱 Minimum mobile app version changed
+            # Please make sure to the production app version for android and ios is lower or equal to the new minimum version.
+
+      # - name: Fail the PR check if the prefix isn't set
+      #   if: ${{ !contains(github.event.pull_request.title, '[No release]') && !contains(github.event.pull_request.title, '[Update only]') && !contains(github.event.pull_request.title, '[Significant change]') && !contains(github.event.pull_request.title, '[Native change]') }}
+      #   run: |
+      #     exit 1
