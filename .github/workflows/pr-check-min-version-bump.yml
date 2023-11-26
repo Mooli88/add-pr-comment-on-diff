@@ -45,9 +45,4 @@ jobs:
           only_create: true
           message: |
             ## 📱 Minimum mobile app version changed
-            ### Please make sure to the production app version for android and ios is lower or equal to the new minimum version.
-
-      # - name: Fail the PR check if the prefix isn't set
-      # if...
-      #   run: |
-      #     exit 1
+            ### Please make sure the production app version for Android and iOS is lower or equal to the new minimum version.
