@@ -26,7 +26,7 @@ jobs:
         run: |
           git fetch origin main
           if git diff --unified=0 origin/main..HEAD -- "src/" | grep -qE "(MINIMUM_MOBILE_APP_VERSION_ANDROID = |MINIMUM_MOBILE_APP_VERSION_IOS =)"; then
-            echo "::set-output name=mobile_version_changed::true"
+            echo "::set-env name=MOBILE_VERSION_CHANGED::true"
           fi
 
       # - name: Mark comment as resolved if prefix is set
@@ -36,9 +36,9 @@ jobs:
       #     hide: true
       #     hide_classify: RESOLVED
 
-      - name: Post comment on PR if prefix isn't set
+      - name: Post comment on PR if mobile min version changed
         uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
-        if: steps.check-mobile-min-version-changed.outputs.mobile_version_changed == 'true'
+        if: env.MOBILE_VERSION_CHANGED == 'true'
         with:
           header: min-version-changed
           only_create: true
