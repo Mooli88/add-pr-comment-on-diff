@@ -29,18 +29,19 @@ jobs:
             echo "MOBILE_VERSION_CHANGED=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # - name: Mark comment as resolved if prefix is set
-      #   uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
-      #   with:
-      #     header: release-strategy
-      #     hide: true
-      #     hide_classify: RESOLVED
+      - name: Mark comment as resolved if mobile min version is unchanged
+        uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
+        if: !steps.check-mobile-min-version-changed.outputs.mobile_version_changed
+        with:
+          header: mobile-min-version-changed
+          hide: true
+          hide_classify: RESOLVED
 
       - name: Post comment on PR if mobile min version changed
         uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
         if: steps.check-mobile-min-version-changed.outputs.mobile_version_changed == 'true'
         with:
-          header: min-version-changed
+          header: mobile-min-version-changed
           only_create: true
           message: |
             ## 📱 Minimum mobile app version changed
