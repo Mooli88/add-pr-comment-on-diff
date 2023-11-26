@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      #   id: checkout_pr_head
       - name: Checkout PR HEAD
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
         with:
@@ -26,7 +25,7 @@ jobs:
         run: |
           git fetch origin main
           if git diff --unified=0 origin/main..HEAD -- "src/" | grep -qE "(MINIMUM_MOBILE_APP_VERSION_ANDROID = |MINIMUM_MOBILE_APP_VERSION_IOS =)"; then
-            echo "::set-env name=MOBILE_VERSION_CHANGED::true"
+            echo "MOBILE_VERSION_CHANGED=true" >> "$GITHUB_OUTPUT"
           fi
 
       # - name: Mark comment as resolved if prefix is set
@@ -37,6 +36,8 @@ jobs:
       #     hide_classify: RESOLVED
 
       - name: Post comment on PR if mobile min version changed
+        env:
+          MOBILE_VERSION_CHANGED: ${{ steps.check-mobile-min-version-changed.MOBILE_VERSION_CHANGED }}
         uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
         if: env.MOBILE_VERSION_CHANGED == 'true'
         with:
