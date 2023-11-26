@@ -18,7 +18,7 @@ jobs:
       - name: Checkout PR HEAD
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Check if mobile min version changed
         id: check-mobile-min-version-changed
@@ -45,9 +45,4 @@ jobs:
           only_create: true
           message: |
             ## 📱 Minimum mobile app version changed
-            ### Please make sure to the production app version for android and ios is lower or equal to the new minimum version.
-
-      # - name: Fail the PR check if the prefix isn't set
-      # if...
-      #   run: |
-      #     exit 1
+            ### Please make sure the production app version for Android and iOS is lower or equal to the new minimum version.
