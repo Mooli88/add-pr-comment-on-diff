@@ -31,7 +31,7 @@ jobs:
 
       - name: Mark comment as resolved if mobile min version is unchanged
         uses: marocchino/sticky-pull-request-comment@efaaab3fd41a9c3de579aba759d2552635e590fd # v2.8.0
-        if: !steps.check-mobile-min-version-changed.outputs.mobile_version_changed
+        if: steps.check-mobile-min-version-changed.outputs.mobile_version_changed != 'true'
         with:
           header: mobile-min-version-changed
           hide: true
